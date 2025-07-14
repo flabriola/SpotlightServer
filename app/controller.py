@@ -70,18 +70,13 @@ class LLMController:
             # Perform web search
             search_results = await self.search_tool.search_with_summary(
                 query=request.query,
-                max_results=request.max_results
+                max_results=request.max_results,
+                location=request.location,
+                search_images=request.search_images
             )
             
-            # Optionally enhance with LLM if requested
-            summary = None
-            if request.include_summary:
-                client = self.get_llm_client(request.llm_provider)
-                llm_result = await client.search(
-                    query=request.query,
-                    context={"search_results": search_results["results"]}
-                )
-                summary = llm_result.get("response", search_results["summary"])
+            # Use the search tool's summary directly (no LLM enhancement)
+            summary = search_results["summary"]
             
             processing_time = (time.time() - start_time) * 1000
             
@@ -96,9 +91,11 @@ class LLMController:
                 results=formatted_results,
                 total_results=len(formatted_results),
                 search_query=request.query,
-                summary=summary or search_results["summary"],
-                llm_provider=request.llm_provider.value,
-                processing_time_ms=processing_time
+                summary=summary,
+                llm_provider="search_only",  # Indicate this is search-only
+                processing_time_ms=processing_time,
+                search_type=search_results.get("search_type"),
+                location=search_results.get("location")
             )
             
         except Exception as e:
@@ -109,7 +106,7 @@ class LLMController:
                 results=[],
                 total_results=0,
                 search_query=request.query,
-                llm_provider=request.llm_provider.value,
+                llm_provider="search_only",
                 processing_time_ms=processing_time
             )
     

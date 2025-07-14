@@ -28,9 +28,14 @@ class ChatRequest(BaseRequest):
 
 
 class SearchRequest(BaseRequest):
-    search_type: Optional[str] = "web"
+    query: str
+    llm_provider: Optional[LLMProvider] = None  # Optional for search-only functionality
+    search_type: Optional[str] = "web"  # web or image
     max_results: Optional[int] = 10
     include_summary: Optional[bool] = True
+    location: Optional[str] = None  # For localized search
+    search_images: Optional[bool] = False  # Whether to search for images
+    context: Optional[Dict[str, Any]] = None
 
 
 class SummariseRequest(BaseRequest):

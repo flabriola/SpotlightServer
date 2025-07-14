@@ -22,6 +22,10 @@ class SearchResult(BaseModel):
     url: str
     snippet: str
     relevance_score: Optional[float] = None
+    # Image-specific fields
+    image_url: Optional[str] = None
+    image_thumbnail: Optional[str] = None
+    image_context: Optional[str] = None
 
 
 class SearchResponse(BaseResponse):
@@ -29,6 +33,8 @@ class SearchResponse(BaseResponse):
     total_results: int
     search_query: str
     summary: Optional[str] = None
+    search_type: Optional[str] = None  # web or image
+    location: Optional[str] = None
 
 
 class SummariseResponse(BaseResponse):

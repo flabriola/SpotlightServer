@@ -85,7 +85,7 @@ async def auto_endpoint(request: BaseRequest) -> Union[ChatResponse, SearchRespo
         elif query_type.value == "search":
             search_request = SearchRequest(
                 query=request.query,
-                llm_provider=request.llm_provider,
+                llm_provider=request.llm_provider,  # This can be None for search-only
                 context=request.context
             )
             return await controller.handle_search(search_request)
